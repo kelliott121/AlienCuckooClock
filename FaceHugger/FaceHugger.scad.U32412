@@ -1,0 +1,151 @@
+$fn = 36;
+
+
+difference()
+{
+    body(top=true);
+    //body(bottom=true);
+    clockworks();
+}
+
+module body(top=false, bottom=false)
+{
+    translate([64, 0, 0])
+    union()
+    {
+        if (top)
+        {
+            //color("blue")
+            //translate([26, 5, 0])
+            //import("FaceHugger_Top_PLA.stl", convexity=20);
+            
+            //color("red")
+            translate([-45.46, -50.72, 5.27])
+            import("FaceHugger_Top_PLA_Fixed.stl", convexity=20);
+        }
+
+        if (bottom)
+        {
+            //color("blue")
+            //rotate([0, 180, 0])
+            //import("FaceHuggerBottom_PLA.stl", convexity=200);
+            
+            //color("red")
+            rotate([0, 180, 0])
+            import("FaceHuggerBottom_PLA_Fixed.stl", convexity=200);
+        }
+    }
+}
+
+module clockworks()
+{
+    height = 100;
+    zOffset = 0;
+    union()
+    {
+        translate([0, 0, zOffset - (height/2)])
+        cube([57, 57, height], center=true);
+        
+        translate([0, 0, zOffset])
+        cylinder(d1=25, d2=10, h=25);
+        
+        translate([0, 0, zOffset + 25])
+        cylinder(d=10, h=35);
+    }
+}
+
+translate([0, 0, 0])
+hour_extender();
+module hour_extender()
+{
+    thickness = 0.4;
+    tolerance = 0.2;
+    diameter = 5.15;
+    male_diameter = diameter - tolerance*2;
+    female_diameter = diameter + tolerance*2;
+    height = 20;
+    
+    //difference()
+    {
+        union()
+        {
+            difference()
+            {
+                translate([0, 0, 0])
+                cylinder(d=female_diameter + thickness*2, h=5);
+                
+                translate([0, 0, 0])
+                cylinder(d=female_diameter, h=5);
+            }   
+            
+            //translate([0, 0, (height - 5)])
+            //cylinder(d=male_diameter, h=5);
+            translate([0, 0, 5])
+            difference()
+            {
+                cylinder(d1=female_diameter + thickness*2, d2=female_diameter + thickness*8, h=2.5);
+                cylinder(d1=female_diameter, d2=female_diameter + thickness*6, h=2.5);
+            }
+            
+            translate([0, 0, 7.5])
+            difference()
+            {
+                cylinder(d=female_diameter + thickness*8, h=22.5);
+                cylinder(d=female_diameter + thickness*6, h=22.5);
+            }
+            
+            translate([0, 0, 30])
+            difference()
+            {
+                cylinder(d1=female_diameter + thickness*8, d2=male_diameter, h=2.5);
+                cylinder(d1=female_diameter + thickness*6, d2=male_diameter - thickness*2, h=2.5);
+            }
+            
+            translate([0, 0, 32.5])
+            difference()
+            {
+                translate([0, 0, 0])
+                cylinder(d=male_diameter, h=5);
+                
+                translate([0, 0, 0])
+                cylinder(d=male_diameter - thickness*2, h=5);
+            } 
+        }
+    }
+}
+
+translate([0, 0, 5])
+minute_extender();
+module minute_extender()
+{
+    diameter = 3.9;
+    width = 2.9;
+    tolerance = 0.2;
+    thickness=0.4;
+    
+    difference()
+    {
+        cylinder(d=diameter+thickness*2, h=5);
+        
+        intersection()
+        {
+            cylinder(d=diameter + tolerance*2, h=5);
+            translate([0, 0, 2.5])
+            cube([width + tolerance*2, width * 2, 5], center=true);
+        }
+    }
+    
+    translate([0, 0, 5])
+    cylinder(d1=diameter+thickness*2, d2=thickness*8, h=2.5);
+    
+    translate([0, 0, 7.5])
+    cylinder(d1=thickness*8, d2=diameter - tolerance*2, h=25);
+    
+    translate([0, 0, 32.5])
+    intersection()
+    {
+        cylinder(d=diameter - tolerance*2, h=5);
+        translate([0, 0, 2.5])
+        cube([width - tolerance*2, width * 2, 5], center=true);
+    }
+}
